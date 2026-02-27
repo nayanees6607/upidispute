@@ -22,6 +22,9 @@ let pinValue = "";
 let currentFilter = "all";
 let disputedTxnIds = new Set();  // Track transactions that already have disputes
 
+let activeDisputeTxnId = null;
+let activeDisputeBtn = null;
+
 // ═══════════════════════════════════════════════════════════════════════════
 // UTILITY HELPERS
 // ═══════════════════════════════════════════════════════════════════════════
@@ -269,7 +272,17 @@ function renderHomeTransactions() {
         return;
     }
 
-    container.innerHTML = recent.map(txn => renderTxnItem(txn, false)).join("");
+    container.innerHTML = recent.map(txn => renderTxnItem(txn, true)).join("");
+
+    // Attach dispute buttons for Home Dashboard
+    container.querySelectorAll(".btn-dispute").forEach(btn => {
+        btn.addEventListener("click", () => {
+            activeDisputeTxnId = btn.dataset.txnId;
+            activeDisputeBtn = btn;
+            document.getElementById("dispute-reason").value = "Money debited but service/product not received";
+            document.getElementById("dispute-overlay").classList.remove("hidden");
+        });
+    });
 }
 
 /** Render a single transaction row */
@@ -471,37 +484,11 @@ function renderHistory() {
 
     // Attach dispute buttons
     container.querySelectorAll(".btn-dispute").forEach(btn => {
-        btn.addEventListener("click", async () => {
-            const txnId = btn.dataset.txnId;
-            const reason = prompt("Why are you raising this dispute?", "Money debited but service/product not received");
-            if (reason === null) return; // User cancelled
-            btn.disabled = true;
-            btn.textContent = "🤖 Analyzing…";
-            try {
-                const result = await raiseDispute(txnId, reason);
-                if (result.error) {
-                    toast(result.error || result.message, "error");
-                    btn.textContent = "🛡️ Raise Dispute";
-                    btn.disabled = false;
-                    return;
-                }
-                disputedTxnIds.add(txnId);
-                const status = result.dispute?.current_status || "PROCESSING";
-                if (status === "RESOLVED") {
-                    toast(`Dispute auto-resolved for ${txnId}`, "success");
-                } else {
-                    toast(`Dispute raised for ${txnId} — Status: ${status}`, "success");
-                }
-                // Refresh balance (may have changed due to refund)
-                fetchUser().then(renderHomeBalance);
-                // Refresh notifications
-                refreshNotifications();
-            } catch {
-                toast("Failed to raise dispute", "error");
-            }
-            btn.textContent = "🛡️ Raised";
-            btn.style.opacity = "0.6";
-            btn.style.pointerEvents = "none";
+        btn.addEventListener("click", () => {
+            activeDisputeTxnId = btn.dataset.txnId;
+            activeDisputeBtn = btn;
+            document.getElementById("dispute-reason").value = "Money debited but service/product not received";
+            document.getElementById("dispute-overlay").classList.remove("hidden");
         });
     });
 }
@@ -724,6 +711,51 @@ document.addEventListener("DOMContentLoaded", () => {
 
         if (!wrapper.contains(e.target)) {
             dropdown.classList.add("hidden");
+        }
+    });
+
+    // ── Dispute Modal Controller ──────────────────────────────────────
+    document.getElementById("dispute-close").addEventListener("click", () => {
+        document.getElementById("dispute-overlay").classList.add("hidden");
+        activeDisputeTxnId = null;
+        activeDisputeBtn = null;
+    });
+
+    document.getElementById("btn-submit-dispute").addEventListener("click", async () => {
+        if (!activeDisputeTxnId || !activeDisputeBtn) return;
+        const reason = document.getElementById("dispute-reason").value;
+        const txnId = activeDisputeTxnId;
+        const btn = activeDisputeBtn;
+
+        document.getElementById("dispute-overlay").classList.add("hidden");
+
+        btn.disabled = true;
+        btn.textContent = "🤖 Analyzing…";
+        try {
+            const result = await raiseDispute(txnId, reason);
+            if (result.error) {
+                toast(result.error || result.message, "error");
+                btn.textContent = "🛡️ Raise Dispute";
+                btn.disabled = false;
+                return;
+            }
+            disputedTxnIds.add(txnId);
+            const status = result.dispute?.current_status || "PROCESSING";
+            if (status === "RESOLVED") {
+                toast(`Dispute auto-resolved for ${txnId}`, "success");
+            } else {
+                toast(`Dispute raised for ${txnId} — Status: ${status}`, "success");
+            }
+            fetchUser().then(renderHomeBalance);
+            refreshNotifications();
+            refreshHome();
+            if (!document.getElementById("view-history").classList.contains("hidden")) {
+                refreshHistory();
+            }
+        } catch {
+            toast("Failed to raise dispute", "error");
+            btn.textContent = "🛡️ Raise Dispute";
+            btn.disabled = false;
         }
     });
 

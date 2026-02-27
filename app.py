@@ -29,7 +29,11 @@ Registers all routes:
 
 import random
 import uuid
+import os
 from datetime import datetime, timezone
+from dotenv import load_dotenv
+
+load_dotenv()  # Load API keys from .env into memory BEFORE initializing Flask
 
 from flask import Flask, jsonify, request, send_from_directory
 
@@ -228,10 +232,10 @@ def make_payment():
     txn_id = f"TXN{uuid.uuid4().hex[:8].upper()}"
     roll = random.random()
 
-    if roll < 0.60:
+    if roll < 0.20:
         status = "SUCCESS"
         merchant_received = "RECEIVED"
-    elif roll < 0.85:
+    elif roll < 0.60:
         status = "DEBITED"
         merchant_received = "NOT_RECEIVED"  # Money stuck!
     else:
