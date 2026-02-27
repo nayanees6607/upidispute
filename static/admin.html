@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PaySafe UPI — Admin Dashboard</title>
+    <meta name="description" content="PaySafe UPI — Admin Dashboard">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <!-- ═══════════════ TOAST CONTAINER ═══════════════ -->
+    <div id="toast-container"></div>
+
+    <!-- ═══════════════ NAVIGATION ═══════════════ -->
+    <nav id="main-nav">
+        <div class="nav-brand">
+            <div class="nav-logo" style="background: linear-gradient(135deg, #FB7185, #E11D48);">
+                <span class="logo-icon">⚙️</span>
+            </div>
+            <span class="nav-title">PaySafe</span>
+            <span class="nav-badge" style="background: var(--error);">ADMIN</span>
+        </div>
+        <div class="nav-links">
+            <a href="/" class="nav-link">
+                <span class="nav-link-icon">⬅️</span>
+                <span>Back to App</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+    <main id="app-content">
+
+        <!-- ──── ADMIN VIEW ──── -->
+        <section id="view-admin" class="view active">
+            <div class="view-header flex-between">
+                <div>
+                    <h1>Admin Dashboard</h1>
+                    <p class="subtitle">Manual Dispute Resolution & Database Management</p>
+                </div>
+                <button class="btn-danger" id="btn-reset-db">
+                    <span class="btn-icon">⚠️</span> Reset Database
+                </button>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="filter-bar" id="admin-tabs" style="margin-top: 16px;">
+                <button class="filter-chip active" data-tab="disputes">Disputes</button>
+                <button class="filter-chip" data-tab="transactions">Transactions</button>
+            </div>
+
+            <!-- Disputes Tab Content -->
+            <div id="tab-disputes" class="admin-tab-content active">
+                <div class="admin-disputes-list" id="admin-disputes-list">
+                    <!-- Populated by JS -->
+                </div>
+                <div class="empty-state hidden" id="admin-empty-disputes">
+                    <div class="empty-icon">✅</div>
+                    <h3>All Clear</h3>
+                    <p>No disputes require manual review at this time.</p>
+                </div>
+            </div>
+
+            <!-- Transactions Tab Content -->
+            <div id="tab-transactions" class="admin-tab-content hidden">
+                <div class="admin-transactions-list" id="admin-transactions-list">
+                    <!-- Populated by JS -->
+                </div>
+                <div class="empty-state hidden" id="admin-empty-transactions">
+                    <div class="empty-icon">📝</div>
+                    <h3>No Transactions</h3>
+                    <p>There are no transactions in the database.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="/static/admin.js"></script>
+</body>
+
+</html>

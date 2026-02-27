@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PaySafe UPI — Smart Payments</title>
+    <meta name="description" content="PaySafe UPI — A premium UPI payment app with smart dispute resolution">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+    <!-- ═══════════════ TOAST CONTAINER ═══════════════ -->
+    <div id="toast-container"></div>
+
+    <!-- ═══════════════ AUTH VIEW ═══════════════ -->
+    <div id="auth-view" class="auth-wrapper">
+        <div class="auth-container">
+            <div class="auth-brand">
+                <div class="nav-logo auth-logo"><span class="logo-icon">◈</span></div>
+                <h1>PaySafe <span class="nav-badge auth-badge">UPI</span></h1>
+                <p>Smart payments, instant resolution</p>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form">
+                <div class="form-group">
+                    <input type="tel" id="login-phone" placeholder="e.g. 9876543210" required>
+                    <label>Phone Number</label>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="login-pin" placeholder="4 or 6 digit PIN" required pattern="[0-9]{4,6}">
+                    <label>UPI PIN</label>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Login</button>
+                <div class="auth-switch">
+                    Don't have an account? <a href="#" id="show-register">Register</a>
+                </div>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" class="auth-form hidden">
+                <div class="form-group">
+                    <input type="text" id="reg-name" placeholder="John Doe" required>
+                    <label>Full Name</label>
+                </div>
+                <div class="form-group">
+                    <input type="tel" id="reg-phone" placeholder="9876543210" required>
+                    <label>Phone Number</label>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="reg-email" placeholder="john@example.com">
+                    <label>Email Address</label>
+                </div>
+                <div class="form-group">
+                    <input type="number" id="reg-balance" placeholder="5000" min="0" step="1" required>
+                    <label>Opening Balance (₹)</label>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="reg-pin" placeholder="Enter a secure PIN" required pattern="[0-9]{4,6}">
+                    <label>Set UPI PIN</label>
+                </div>
+                <button type="submit" class="btn btn-primary w-100">Create Account</button>
+                <div class="auth-switch">
+                    Already have an account? <a href="#" id="show-login">Login</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ═══════════════ MAIN APP VIEW ═══════════════ -->
+    <div id="main-app-view" class="hidden">
+
+        <!-- ═══════════════ NAVIGATION ═══════════════ -->
+        <nav id="main-nav">
+            <div class="nav-brand">
+                <div class="nav-logo">
+                    <span class="logo-icon">◈</span>
+                </div>
+                <span class="nav-title">PaySafe</span>
+                <span class="nav-badge">UPI</span>
+            </div>
+            <div class="nav-links">
+                <a href="#" class="nav-link active" data-view="home" id="nav-home">
+                    <span class="nav-link-icon">🏠</span>
+                    <span>Home</span>
+                </a>
+                <a href="#" class="nav-link" data-view="history" id="nav-history">
+                    <span class="nav-link-icon">📋</span>
+                    <span>History</span>
+                </a>
+                <a href="#" class="nav-link" data-view="disputes" id="nav-disputes">
+                    <span class="nav-link-icon">🛡️</span>
+                    <span>Disputes</span>
+                </a>
+
+            </div>
+            <div class="nav-user" id="nav-user-info">
+                <div class="notif-wrapper" id="notif-wrapper">
+                    <button class="notif-bell" id="notif-bell" title="Notifications">
+                        🔔
+                        <span class="notif-badge hidden" id="notif-badge">0</span>
+                    </button>
+                    <div class="notif-dropdown hidden" id="notif-dropdown">
+                        <div class="notif-header">
+                            <span class="notif-title">Notifications</span>
+                            <div class="notif-actions">
+                                <button class="notif-mark-read" id="notif-mark-read" title="Mark all read">✓</button>
+                                <button class="notif-logout" id="nav-logout" title="Logout">🚪 Logout</button>
+                            </div>
+                        </div>
+                        <div class="notif-list" id="notif-list">
+                            <div class="notif-empty">No notifications yet</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="nav-avatar" id="nav-avatar">N</div>
+            </div>
+        </nav>
+
+        <!-- ═══════════════ MAIN CONTENT ═══════════════ -->
+        <main id="app-content">
+
+            <!-- ──── HOME VIEW ──── -->
+            <section id="view-home" class="view active">
+                <!-- Balance Card -->
+                <div class="balance-card" id="balance-card">
+                    <div class="balance-greeting">
+                        <span class="wave-emoji">👋</span>
+                        <span>Hello, <strong id="home-username">—</strong></span>
+                    </div>
+                    <div class="balance-label">Available Balance</div>
+                    <div class="balance-amount" id="home-balance">₹ —</div>
+                    <div class="balance-upi" id="home-upi">—</div>
+                </div>
+
+                <!-- Pay Button -->
+                <div class="pay-section">
+                    <button class="pay-button" id="btn-pay">
+                        <span class="pay-icon">⟐</span>
+                        <span>Pay</span>
+                    </button>
+                </div>
+
+                <!-- Merchants Grid -->
+                <div class="section-header">
+                    <h2>Quick Pay</h2>
+                </div>
+                <div class="merchants-grid" id="merchants-grid">
+                    <!-- Populated by JS -->
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="section-header">
+                    <h2>Recent Activity</h2>
+                    <a href="#" class="see-all" data-view="history">See all →</a>
+                </div>
+                <div class="transactions-list" id="home-transactions">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- ──── PAY VIEW (Drawer/Modal) ──── -->
+            <div id="pay-overlay" class="overlay hidden">
+                <div class="pay-drawer">
+                    <!-- Step 1: Enter Amount -->
+                    <div id="pay-step-1" class="pay-step active">
+                        <div class="drawer-header">
+                            <button class="btn-back" id="pay-close">✕</button>
+                            <h3>Pay to</h3>
+                        </div>
+                        <div class="pay-merchant-info" id="pay-merchant-info">
+                            <div class="pay-merchant-icon" id="pay-merchant-icon">🏪</div>
+                            <div>
+                                <div class="pay-merchant-name" id="pay-merchant-name">Merchant</div>
+                                <div class="pay-merchant-upi" id="pay-merchant-upi">merchant@upi</div>
+                            </div>
+                        </div>
+                        <div class="amount-input-wrap">
+                            <span class="rupee-sign">₹</span>
+                            <input type="number" id="pay-amount" class="amount-input" placeholder="0" min="1"
+                                step="0.01" autofocus>
+                        </div>
+                        <button class="btn-primary" id="btn-proceed-pin">Proceed to Pay</button>
+                    </div>
+
+                    <!-- Step 2: Enter PIN -->
+                    <div id="pay-step-2" class="pay-step">
+                        <div class="drawer-header">
+                            <button class="btn-back" id="pin-back">←</button>
+                            <h3>Enter UPI PIN</h3>
+                        </div>
+                        <p class="pin-hint">Enter your 4-digit UPI PIN to confirm payment</p>
+                        <div class="pin-dots" id="pin-dots">
+                            <div class="pin-dot"></div>
+                            <div class="pin-dot"></div>
+                            <div class="pin-dot"></div>
+                            <div class="pin-dot"></div>
+                        </div>
+                        <input type="password" id="pin-input" class="pin-hidden-input" maxlength="4" inputmode="numeric"
+                            pattern="[0-9]*">
+                        <div class="pin-keypad" id="pin-keypad">
+                            <button class="key" data-key="1">1</button>
+                            <button class="key" data-key="2">2</button>
+                            <button class="key" data-key="3">3</button>
+                            <button class="key" data-key="4">4</button>
+                            <button class="key" data-key="5">5</button>
+                            <button class="key" data-key="6">6</button>
+                            <button class="key" data-key="7">7</button>
+                            <button class="key" data-key="8">8</button>
+                            <button class="key" data-key="9">9</button>
+                            <button class="key key-empty"></button>
+                            <button class="key" data-key="0">0</button>
+                            <button class="key key-delete" data-key="del">⌫</button>
+                        </div>
+                    </div>
+
+                    <!-- Step 3: Result -->
+                    <div id="pay-step-3" class="pay-step">
+                        <div class="pay-result" id="pay-result">
+                            <div class="result-icon" id="result-icon">✓</div>
+                            <div class="result-title" id="result-title">Payment Successful!</div>
+                            <div class="result-amount" id="result-amount">₹ 0</div>
+                            <div class="result-to" id="result-to">to Merchant</div>
+                            <div class="result-txn" id="result-txn">TXN ID: —</div>
+                            <div class="result-status-badge" id="result-status-badge">SUCCESS</div>
+                            <button class="btn-primary" id="btn-done">Done</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ──── HISTORY VIEW ──── -->
+            <section id="view-history" class="view">
+                <div class="view-header">
+                    <h1>Transaction History</h1>
+                    <p class="subtitle">All your payments in one place</p>
+                </div>
+                <div class="filter-bar" id="filter-bar">
+                    <button class="filter-chip active" data-filter="all">All</button>
+                    <button class="filter-chip" data-filter="SUCCESS">Success</button>
+                    <button class="filter-chip" data-filter="FAILED">Failed</button>
+                    <button class="filter-chip" data-filter="DEBITED">Debited</button>
+                </div>
+                <div class="transactions-list full" id="history-transactions">
+                    <!-- Populated by JS -->
+                </div>
+            </section>
+
+            <!-- ──── DISPUTES VIEW ──── -->
+            <section id="view-disputes" class="view">
+                <div class="view-header">
+                    <h1>Disputes</h1>
+                    <p class="subtitle">Track and resolve your disputed transactions</p>
+                </div>
+                <div class="disputes-list" id="disputes-list">
+                    <!-- Populated by JS -->
+                </div>
+                <div class="empty-state hidden" id="disputes-empty">
+                    <div class="empty-icon">🛡️</div>
+                    <h3>No disputes</h3>
+                    <p>All your transactions are in good shape!</p>
+                </div>
+            </section>
+
+
+        </main>
+    </div>
+
+    <script src="/static/app.js"></script>
+</body>
+
+</html>
