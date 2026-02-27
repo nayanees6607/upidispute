@@ -61,8 +61,8 @@ You MUST calculate the score by adding the following points if the condition is 
 +30 points: Amount is completely unusually high (> 10,000)
 +15 points: Amount is moderately high (> 2,000)
 +25 points: Time Since Transaction is less than 5 minutes (quick dispute)
-+20 points: Status is SUCCESS, but user claims money debited & merchant not credited.
-+0  points: Status is PENDING/DEBITED and merchant NOT credited (standard network issue).
++64  points: Status is SUCCESS, but user claims money debited & merchant not credited.
++0  points: Status is PENDING/DEBITED/FAILED and merchant NOT credited (standard network issue).
 
 Maximum score is 100. Minimum score is 0.
 ---
