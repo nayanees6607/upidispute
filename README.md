@@ -130,15 +130,55 @@ Add screenshots of:
 ---
 
 ## 🔄 Workflow
+flowchart TD
+    A([🚀 User Opens UPI Dispute System]) --> B[🔐 Register / Login]
 
-1. User logs in.
-2. User raises a dispute.
-3. Transaction details are stored in MongoDB.
-4. Admin reviews the dispute.
-5. Admin updates the dispute status.
-6. User tracks the dispute until resolution.
+    B --> C{Authentication Successful?}
 
----
+    C -- No --> B
+    C -- Yes --> D[👤 User Dashboard]
+
+    D --> E[📝 Raise UPI Dispute]
+    E --> F[💳 Enter Transaction Details]
+    F --> G[📎 Upload Supporting Details]
+    G --> H[(🗄️ Store Dispute in MongoDB)]
+
+    H --> I[⏳ Dispute Status: Pending]
+
+    I --> J[👨‍💼 Admin Dashboard]
+    J --> K[🔍 Review Dispute]
+    K --> L{Admin Decision}
+
+    L -- Need More Information --> M[📋 Request Additional Details]
+    M --> D
+
+    L -- Reject --> N[❌ Dispute Rejected]
+    L -- Approve --> O[✅ Dispute Approved]
+
+    O --> P[🔄 Process Resolution]
+    P --> Q[🎯 Dispute Resolved]
+
+    N --> R[📊 Update Status]
+    Q --> R
+
+    R --> S[👤 User Tracks Dispute]
+    S --> T{Resolved?}
+
+    T -- No --> J
+    T -- Yes --> U([🎉 Dispute Resolution Complete])
+
+    style A fill:#673ab7,color:#fff,stroke:#512da8,stroke-width:2px
+    style B fill:#2196f3,color:#fff,stroke:#1565c0,stroke-width:2px
+    style D fill:#03a9f4,color:#fff,stroke:#0288d1,stroke-width:2px
+    style E fill:#00bcd4,color:#fff,stroke:#0097a7,stroke-width:2px
+    style H fill:#4caf50,color:#fff,stroke:#388e3c,stroke-width:2px
+    style J fill:#ff9800,color:#fff,stroke:#f57c00,stroke-width:2px
+    style K fill:#ff9800,color:#fff,stroke:#f57c00,stroke-width:2px
+    style L fill:#ffc107,color:#000,stroke:#ffa000,stroke-width:2px
+    style N fill:#f44336,color:#fff,stroke:#d32f2f,stroke-width:2px
+    style O fill:#4caf50,color:#fff,stroke:#388e3c,stroke-width:2px
+    style Q fill:#4caf50,color:#fff,stroke:#388e3c,stroke-width:2px
+    style U fill:#673ab7,color:#fff,stroke:#512da8,stroke-width:2px
 
 ## 📌 Future Enhancements
 
@@ -165,7 +205,10 @@ Add screenshots of:
 
 ## 🤝 Contributors
 
-- Nayanees
+- Nayaneesh
+- Pavan Sai Reddy
+- Karthikeya
+- Gopu Abhinav
 - Team Members
 
 ---
